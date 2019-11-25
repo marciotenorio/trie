@@ -97,6 +97,7 @@ public class TrieTree {
             for (String arrWords: wordsList) {
                 if( arrWords.contains(prefix) && count < qtd){
                     System.out.println(arrWords);
+                    count++;
                 }
             }
         }
