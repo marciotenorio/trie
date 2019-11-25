@@ -63,24 +63,6 @@ public class TrieTree {
         }
     }
 
-//    public void  suggestions(String prefix){
-//        if( prefixExists(prefix) ) {
-//
-//            HashMap<Character, TrieNode> children = root.getChildren();
-//            TrieNode trieNode = TrieNodeLastLetter(prefix);
-//            StringBuilder word = new StringBuilder(prefix);
-//
-//            while (children.isEmpty() ){
-//                for (HashMap.Entry<Character, TrieNode> pair : trieNode.getChildren().entrySet() ){
-//
-//                }
-//            }
-//
-//
-//        }
-//        System.out.println("ERROR: Prefix do not exists!");
-//    }
-
     public void suggestions(String prefix){
         if( prefixExists(prefix) ){
             for (String arrWords: wordsList) {
@@ -104,19 +86,21 @@ public class TrieTree {
     }
 
     public boolean prefixExists(String prefix){
-        if ( check(prefix) ){
-            return true;
-        }
-
         HashMap<Character, TrieNode> children = root.getChildren();
-        TrieNode trieNode = new TrieNode();
+        char letter;
+        TrieNode trieNode;
 
         for (int i = 0; i < prefix.length(); i++) {
-            trieNode = children.get(prefix.charAt(i));
-            children = trieNode.getChildren();
+            letter = prefix.charAt(i);
+            if( children.containsKey(letter) ){
+                trieNode = children.get(letter);
+                children = trieNode.getChildren();
+            }
+            else{
+                return false;
+            }
         }
-
-        return !children.isEmpty();
+        return true;
     }
 
     public TrieNode TrieNodeLastLetter(String word){
