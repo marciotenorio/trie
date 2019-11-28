@@ -66,9 +66,8 @@ public class TrieTree {
 
     public void printSuggestions(HashMap<String, Boolean> wordList){
         for(Map.Entry<String, Boolean> pair : wordList.entrySet()){
-            if( pair.getValue() ) {
+            if( pair.getValue() )
                 System.out.println(pair.getKey());
-            }
         }
     }
 
@@ -83,10 +82,14 @@ public class TrieTree {
     }
 
     public void suggestions(String prefix, TrieNode trieNode){
-        if( trieNode.getChildren().isEmpty() )
-            return;
         HashMap<Character, TrieNode> children = trieNode.getChildren();
+        //debug
+        System.out.println(trieNode.getIsWord());
+        System.out.println(trieNode.getChildren().get('a'));
         StringBuilder generatingWord = new StringBuilder(prefix);
+
+        if( children.isEmpty() )
+            return;
 
         for(Map.Entry<Character, TrieNode> pair : children.entrySet()){
             generatingWord.append(pair.getKey());
@@ -103,20 +106,18 @@ public class TrieTree {
     }
 
     public void suggestions(String prefix){
-        TrieNode trieNode = trieNodeLastLetter(prefix);
-        wordList.put(prefix, trieNode.getIsWord());
-//        if( trieNode.getIsWord() )
-//            wordList.put(prefix, true);
-//        else
-//            wordList.put(prefix, false);
+        TrieNode trieNode = TrieNodeLastLetter(prefix);
+        if( trieNode.getIsWord() )
+            wordList.put(prefix, true);
         suggestions(prefix, trieNode);
         printSuggestions(wordList);
     }
 
+
     public void suggestions(String prefix, int qtd){
-        TrieNode trieNode = trieNodeLastLetter(prefix);
-//        if( trieNode.getIsWord() )
-        wordList.put(prefix, trieNode.getIsWord());
+        TrieNode trieNode = TrieNodeLastLetter(prefix);
+        if( trieNode.getIsWord() )
+            wordList.put(prefix, true);
         suggestions(prefix, trieNode);
         printSuggestions(wordList, qtd);
     }
@@ -139,11 +140,13 @@ public class TrieTree {
         return true;
     }
 
-    public TrieNode trieNodeLastLetter(String word){
+    public TrieNode TrieNodeLastLetter(String word){
         HashMap<Character, TrieNode> children = root.getChildren();
         TrieNode trieNode = new TrieNode();
 
         for (int i = 0; i < word.length(); i++) {
+            if( i == word.length() - 1 ) //debug
+                return trieNode;
             trieNode = children.get(word.charAt(i));
             children = trieNode.getChildren();
         }
