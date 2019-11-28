@@ -2,7 +2,7 @@ import java.util.*;
 
 public class TrieTree {
     private TrieNode root;
-    private List<String> wordsList = new ArrayList<>();
+    private HashMap<String, Boolean> wordList = new HashMap<>();
 
     public TrieTree(){
         this.root = new TrieNode();
@@ -24,7 +24,6 @@ public class TrieTree {
             children = trieNode.getChildren();
             if( i == word.length() - 1 ){
                 trieNode.setIsWord(true);
-                wordsList.add(word);
             }
         }
     }
@@ -63,26 +62,70 @@ public class TrieTree {
         }
     }
 
-    public void suggestions(String prefix){
-        if( prefixExists(prefix) ){
-            for (String arrWords: wordsList) {
-                if( arrWords.contains(prefix) ){
-                    System.out.println(arrWords);
-                }
+    public void printSuggestions(HashMap<String, Boolean> wordList){
+        for(Map.Entry<String, Boolean> pair : wordList.entrySet()){
+            if( pair.getValue() ) {
+                System.out.println(pair.getKey());
             }
         }
     }
 
-    public void suggestions(String prefix, int qtd){
-        if( prefixExists(prefix) ){
-            int count = 0;
-            for (String arrWords: wordsList) {
-                if( arrWords.contains(prefix) && count < qtd){
-                    System.out.println(arrWords);
-                    count++;
+    public void printSuggestions(HashMap<String, Boolean> wordList, int qtd){//3
+        int count = 0;
+        for(Map.Entry<String, Boolean> pair : wordList.entrySet()){
+            if( pair.getValue() )
+                System.out.println(pair.getKey());
+            if( count > qtd  )
+                return;
+            count++;
+        }
+    }
+
+    public void suggestions(String prefix, TrieNode trieNode){
+        if( trieNode.getChildren().isEmpty() )
+            return;
+        HashMap<Character, TrieNode> children = trieNode.getChildren();
+        StringBuilder generatingWord = new StringBuilder(prefix);
+
+        for(Map.Entry<Character, TrieNode> pair : children.entrySet()){
+            generatingWord.append(pair.getKey());
+
+            if( wordList.containsKey(generatingWord.toString()) ){
+                if( children.get(pair.getKey()) != null )
+                    suggestions(generatingWord.toString(), children.get(pair.getKey()));
+            }else{
+                //add word and telling if is word or not
+                wordList.put(generatingWord.toString(), pair.getValue().getIsWord());
+                if( children.get(pair.getKey()) != null ) {
+                    suggestions(generatingWord.toString(), children.get(pair.getKey()));
+                    removeLastCharacter(generatingWord.toString());
+                    generatingWord = new StringBuilder(removeLastCharacter(generatingWord.toString()));
                 }
             }
+
         }
+    }
+
+    public static String removeLastCharacter(String str) {
+        String result = null;
+        if ((str != null) && (str.length() > 0)) {
+            result = str.substring(0, str.length() - 1);
+        }
+        return result;
+    }
+
+    public void suggestions(String prefix){
+        TrieNode trieNode = trieNodeLastLetter(prefix);
+        wordList.put(prefix, trieNode.getIsWord());
+        suggestions(prefix, trieNode);
+        printSuggestions(wordList);
+    }
+
+    public void suggestions(String prefix, int qtd){
+        TrieNode trieNode = trieNodeLastLetter(prefix);
+        wordList.put(prefix, trieNode.getIsWord());
+        suggestions(prefix, trieNode);
+        printSuggestions(wordList, qtd);
     }
 
     public boolean prefixExists(String prefix){
@@ -103,7 +146,7 @@ public class TrieTree {
         return true;
     }
 
-    public TrieNode TrieNodeLastLetter(String word){
+    public TrieNode trieNodeLastLetter(String word){
         HashMap<Character, TrieNode> children = root.getChildren();
         TrieNode trieNode = new TrieNode();
 

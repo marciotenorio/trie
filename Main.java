@@ -1,9 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-<<<<<<< HEAD
-=======
 import java.util.Map;
->>>>>>> fixSuggestions
 import java.util.Scanner;
 
 public class Main {
@@ -12,10 +9,6 @@ public class Main {
         TrieTree trieTree = new TrieTree();
         if( args.length > 0 ) {
             try {
-<<<<<<< HEAD
-
-=======
->>>>>>> fixSuggestions
                 Scanner scanner = new Scanner(new File(args[0]));
 
                 while (scanner.hasNextLine()) {
@@ -32,8 +25,5 @@ public class Main {
         else
             trieTree.suggestions(args[1]);
     }
-<<<<<<< HEAD
-=======
 
->>>>>>> fixSuggestions
 }
