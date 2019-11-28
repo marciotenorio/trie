@@ -2,7 +2,6 @@ import java.util.HashMap;
 
 public class TrieNode {
     private char letter;
-    //Hashmap pois inserção e remoção tem complexidade O(1)
     private HashMap<Character, TrieNode> children  = new HashMap<>();
     private boolean isWord;
 

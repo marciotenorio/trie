@@ -3,7 +3,6 @@ import java.util.*;
 public class TrieTree {
     private TrieNode root;
     private HashMap<String, Boolean> wordList = new HashMap<>();
-    //private List<String> wordsList = new ArrayList<>();
 
     public TrieTree(){
         this.root = new TrieNode();
@@ -25,7 +24,6 @@ public class TrieTree {
             children = trieNode.getChildren();
             if( i == word.length() - 1 ){
                 trieNode.setIsWord(true);
-                //wordsList.add(word);
             }
         }
     }
@@ -72,13 +70,14 @@ public class TrieTree {
         }
     }
 
-    public void printSuggestions(HashMap<String, Boolean> wordList, int qtd){
+    public void printSuggestions(HashMap<String, Boolean> wordList, int qtd){//3
         int count = 0;
         for(Map.Entry<String, Boolean> pair : wordList.entrySet()){
-            if( qtd > count  )
-                return;
-            if(pair.getValue())
+            if( pair.getValue() )
                 System.out.println(pair.getKey());
+            if( count > qtd  )
+                return;
+            count++;
         }
     }
 
@@ -91,31 +90,39 @@ public class TrieTree {
         for(Map.Entry<Character, TrieNode> pair : children.entrySet()){
             generatingWord.append(pair.getKey());
 
-            if( wordList.containsKey(generatingWord) ){
-                suggestions(generatingWord.toString(), children.get(generatingWord));
+            if( wordList.containsKey(generatingWord.toString()) ){
+                if( children.get(pair.getKey()) != null )
+                    suggestions(generatingWord.toString(), children.get(pair.getKey()));
             }else{
                 //add word and telling if is word or not
                 wordList.put(generatingWord.toString(), pair.getValue().getIsWord());
-                suggestions(generatingWord.toString(), children.get(generatingWord));
+                if( children.get(pair.getKey()) != null ) {
+                    suggestions(generatingWord.toString(), children.get(pair.getKey()));
+                    removeLastCharacter(generatingWord.toString());
+                    generatingWord = new StringBuilder(removeLastCharacter(generatingWord.toString()));
+                }
             }
 
         }
     }
 
+    public static String removeLastCharacter(String str) {
+        String result = null;
+        if ((str != null) && (str.length() > 0)) {
+            result = str.substring(0, str.length() - 1);
+        }
+        return result;
+    }
+
     public void suggestions(String prefix){
         TrieNode trieNode = trieNodeLastLetter(prefix);
         wordList.put(prefix, trieNode.getIsWord());
-//        if( trieNode.getIsWord() )
-//            wordList.put(prefix, true);
-//        else
-//            wordList.put(prefix, false);
         suggestions(prefix, trieNode);
         printSuggestions(wordList);
     }
 
     public void suggestions(String prefix, int qtd){
         TrieNode trieNode = trieNodeLastLetter(prefix);
-//        if( trieNode.getIsWord() )
         wordList.put(prefix, trieNode.getIsWord());
         suggestions(prefix, trieNode);
         printSuggestions(wordList, qtd);
