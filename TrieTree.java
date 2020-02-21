@@ -70,14 +70,15 @@ public class TrieTree {
         }
     }
 
-    public void printSuggestions(HashMap<String, Boolean> wordList, int qtd){//3
-        int count = 0;
+    public void printSuggestions(HashMap<String, Boolean> wordList, int qtd){
         for(Map.Entry<String, Boolean> pair : wordList.entrySet()){
-            if( pair.getValue() )
+            if( pair.getValue() ) {
                 System.out.println(pair.getKey());
-            if( count > qtd  )
-                return;
-            count++;
+                qtd--;
+                if(qtd == 0)
+                    return;
+            }
+
         }
     }
 
